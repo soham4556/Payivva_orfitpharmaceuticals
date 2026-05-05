@@ -25,7 +25,7 @@ const Navbar = () => {
   return (
     <nav className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
       <div className="container justify-between flex items-center" style={{ width: '100%' }}>
-        <Link to="/" style={{ height: '55px', display: 'flex', alignItems: 'center' }}>
+        <Link to="/" style={{ height: '70px', display: 'flex', alignItems: 'center' }}>
           <img src="/logo (1).png" alt="Orfit Logo" style={{ height: '100%', objectFit: 'contain', transition: 'all 0.3s' }} />
         </Link>
 
@@ -50,13 +50,23 @@ const Navbar = () => {
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           className="mobile-toggle-btn"
           style={{ 
-            display: 'none', background: 'var(--primary)', border: 'none', 
-            width: '45px', height: '45px', borderRadius: '12px',
-            color: 'white', cursor: 'pointer', transition: 'var(--transition)',
-            boxShadow: 'var(--shadow-sm)'
+            display: 'none', background: 'none', border: 'none', 
+            width: '80px', height: '80px',
+            cursor: 'pointer', transition: 'var(--transition)',
+            padding: '0',
+            outline: 'none',
+            marginRight: '-15px'
           }}
         >
-          {isMobileMenuOpen ? '✕' : '☰'}
+          {isMobileMenuOpen ? (
+            <div style={{ 
+              width: '65px', height: '65px', background: 'var(--primary)', 
+              borderRadius: '18px', display: 'flex', alignItems: 'center', 
+              justifyContent: 'center', color: 'white', fontSize: '1.8rem' 
+            }}>✕</div>
+          ) : (
+            <img src="/products/toggle.png" alt="Menu" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          )}
         </button>
       </div>
 
