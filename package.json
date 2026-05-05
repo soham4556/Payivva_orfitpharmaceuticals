@@ -1,0 +1,13 @@
+{
+  "name": "orfit-pharmaceuticals",
+  "version": "1.0.0",
+  "scripts": {
+    "install-all": "npm install && cd website && npm install && cd ../server && npm install",
+    "dev": "concurrently \"npm run dev-frontend\" \"npm run dev-backend\"",
+    "dev-frontend": "cd website && npm run dev",
+    "dev-backend": "cd server && npm run dev"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.1"
+  }
+}

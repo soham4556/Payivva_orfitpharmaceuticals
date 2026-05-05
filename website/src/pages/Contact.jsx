@@ -1,6 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    message: ''
+  });
+  const [status, setStatus] = useState({ type: '', message: '' });
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setStatus({ type: '', message: '' });
+
+    try {
+      const response = await fetch('http://localhost:5000/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: `${formData.firstName} ${formData.lastName}`,
+          email: formData.email,
+          message: formData.message
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setStatus({ type: 'success', message: data.success });
+        setFormData({ firstName: '', lastName: '', email: '', message: '' });
+      } else {
+        setStatus({ type: 'error', message: data.error || 'Something went wrong.' });
+      }
+    } catch (error) {
+      setStatus({ type: 'error', message: 'Failed to connect to server. Is the backend running?' });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="contact-page">
       {/* Hero Section */}
@@ -19,26 +62,80 @@ const Contact = () => {
             {/* Contact Form Container */}
             <div className="glass-card" style={{ padding: '3rem', background: 'white', borderRadius: '30px', boxShadow: 'var(--shadow-lg)' }}>
               <h2 style={{ color: 'var(--primary)', marginBottom: '2rem' }}>Send Us a Message</h2>
-              <form style={{ display: 'grid', gap: '1.5rem' }}>
+              
+              {status.message && (
+                <div style={{ 
+                  padding: '1rem', 
+                  borderRadius: '12px', 
+                  marginBottom: '1.5rem',
+                  background: status.type === 'success' ? '#ecfdf5' : '#fef2f2',
+                  color: status.type === 'success' ? '#059669' : '#dc2626',
+                  fontWeight: '600',
+                  border: `1px solid ${status.type === 'success' ? '#10b981' : '#ef4444'}`
+                }}>
+                  {status.message}
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '1.5rem' }}>
                 <div className="grid" style={{ gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
                   <div className="flex flex-col">
                     <label style={{ fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px', color: 'var(--text-muted)' }}>FIRST NAME</label>
-                    <input type="text" placeholder="John" style={{ padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none' }} />
+                    <input 
+                      type="text" 
+                      name="firstName"
+                      value={formData.firstName}
+                      onChange={handleChange}
+                      required
+                      placeholder="John" 
+                      style={{ padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none' }} 
+                    />
                   </div>
                   <div className="flex flex-col">
                     <label style={{ fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px', color: 'var(--text-muted)' }}>LAST NAME</label>
-                    <input type="text" placeholder="Doe" style={{ padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none' }} />
+                    <input 
+                      type="text" 
+                      name="lastName"
+                      value={formData.lastName}
+                      onChange={handleChange}
+                      required
+                      placeholder="Doe" 
+                      style={{ padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none' }} 
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col">
                   <label style={{ fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px', color: 'var(--text-muted)' }}>EMAIL ADDRESS</label>
-                  <input type="email" placeholder="john@example.com" style={{ padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none' }} />
+                  <input 
+                    type="email" 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    required
+                    placeholder="john@example.com" 
+                    style={{ padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none' }} 
+                  />
                 </div>
                 <div className="flex flex-col">
                   <label style={{ fontSize: '0.8rem', fontWeight: '700', marginBottom: '8px', color: 'var(--text-muted)' }}>MESSAGE</label>
-                  <textarea placeholder="How can we help you?" rows="5" style={{ padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none', resize: 'none' }}></textarea>
+                  <textarea 
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    required
+                    placeholder="How can we help you?" 
+                    rows="5" 
+                    style={{ padding: '1rem', borderRadius: '12px', border: '1px solid #e2e8f0', outline: 'none', resize: 'none' }}
+                  ></textarea>
                 </div>
-                <button className="btn btn-primary" style={{ padding: '1.2rem', fontSize: '1rem', borderRadius: '15px' }}>Send Message 🚀</button>
+                <button 
+                  type="submit" 
+                  disabled={loading}
+                  className="btn btn-primary" 
+                  style={{ padding: '1.2rem', fontSize: '1rem', borderRadius: '15px', opacity: loading ? 0.7 : 1 }}
+                >
+                  {loading ? 'Sending...' : 'Send Message 🚀'}
+                </button>
               </form>
             </div>
 

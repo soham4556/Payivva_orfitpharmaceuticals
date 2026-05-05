@@ -1,67 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Products = () => {
   const navigate = useNavigate();
   const [cartCount, setCartCount] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-  const products = [
-    { 
-      id: 30, name: "KNEEMATRIX PLUS", category: "Joint Care", pack: "10x1x10 Softgels", price: "₹2450", oldPrice: "₹2900", badge: "BEST SELLER",
-      rating: 4.8, reviews: 124, stock: "In Stock",
-      details: "KNEEMATRIX PLUS is a premium formulation for joint health, containing Glucosamine, Chondroitin, and essential minerals to support cartilage repair and mobility.",
-      highlights: ["Supports Joint Flexibility", "Cartilage Regeneration", "Enriched with Minerals"]
-    },
-    { 
-      id: 28, name: "MUCH-24", category: "Multivitamin", pack: "10x1x10 Softgels", price: "₹1850", oldPrice: "₹2100", badge: "POPULAR",
-      rating: 4.9, reviews: 310, stock: "In Stock",
-      details: "MUCH-24 is a comprehensive 24-ingredient multivitamin designed for daily vitality, immunity boost, and metabolic support.",
-      highlights: ["24 Essential Nutrients", "Immunity Support", "Energy Booster"]
-    },
-    { 
-      id: 4, name: "AHA-GOLD", category: "Antioxidant", pack: "10x1x10 Softgels", price: "₹2200", oldPrice: "₹2500", badge: "NEW",
-      rating: 4.7, reviews: 85, stock: "Limited Stock",
-      details: "AHA-GOLD provides powerful antioxidant protection with Alpha Lipoic Acid and Lycopene to fight oxidative stress and support heart health.",
-      highlights: ["Cardiac Support", "Skin Health", "Powerful Antioxidant"]
-    },
-    { 
-      id: 10, name: "BHIMCAL-MAX K27", category: "Calcium", pack: "10x1x10 Softgels", price: "₹1200", oldPrice: "₹1400", badge: "",
-      rating: 4.6, reviews: 92, stock: "In Stock",
-      details: "BHIMCAL-MAX K27 combines high-absorption Calcium with Vitamin K27 to ensure calcium reaches the bones and not the arteries.",
-      highlights: ["Bone Density Support", "K27 for Absorption", "Milk-derived Calcium"]
-    },
-    { 
-      id: 14, name: "FEMURSO-300", category: "Hepatobiliary", pack: "10x10 Tablets", price: "₹3400", oldPrice: "₹3800", badge: "DISCOUNT",
-      rating: 4.9, reviews: 45, stock: "In Stock",
-      details: "FEMURSO-300 (Ursodeoxycholic Acid) is used for the treatment of primary biliary cirrhosis and dissolution of gallstones.",
-      highlights: ["Liver Health", "Gallstone Dissolution", "MNC Grade Quality"]
-    },
-    { 
-      id: 13, name: "OCEDEZACORT-6", category: "Steroid", pack: "10x10 Tablets", price: "₹850", oldPrice: "₹1000", badge: "",
-      rating: 4.5, reviews: 67, stock: "In Stock",
-      details: "OCEDEZACORT-6 (Deflazacort) is a corticosteroid with anti-inflammatory and immunosuppressant properties used in various conditions.",
-      highlights: ["Anti-inflammatory", "Immunosuppressant", "Rapid Action"]
-    },
-    { 
-      id: 9, name: "ORFICEF-CV 200", category: "Antibiotic", pack: "10x1x10 Tablets", price: "₹950", oldPrice: "₹1100", badge: "",
-      rating: 4.8, reviews: 156, stock: "In Stock",
-      details: "ORFICEF-CV 200 is a powerful broad-spectrum antibiotic combination used for treating severe bacterial infections.",
-      highlights: ["Broad Spectrum", "High Efficacy", "Safe for Adults"]
-    },
-    { 
-      id: 8, name: "KULKAST-M", category: "Anti-Allergic", pack: "10x10 Tablets", price: "₹750", oldPrice: "₹900", badge: "",
-      rating: 4.7, reviews: 204, stock: "In Stock",
-      details: "KULKAST-M (Montelukast & Levocetirizine) provides rapid relief from allergic rhinitis and asthma symptoms.",
-      highlights: ["Allergy Relief", "Asthma Support", "Non-drowsy Formula"]
-    },
-    { 
-      id: 22, name: "ORFI-OZ", category: "Infection", pack: "10x10 Tablets", price: "₹1150", oldPrice: "₹1300", badge: "",
-      rating: 4.6, reviews: 88, stock: "In Stock",
-      details: "ORFI-OZ is an effective combination for gastrointestinal infections and mixed bacterial-protozoal infections.",
-      highlights: ["Dual Action", "Stomach Infection Relief", "Proven Results"]
-    }
-  ];
+  useEffect(() => {
+    fetch('http://localhost:5000/api/products')
+      .then(res => res.json())
+      .then(data => {
+        setProducts(data);
+        setLoading(false);
+      })
+      .catch(err => {
+        console.error('Error fetching products:', err);
+        setLoading(false);
+      });
+  }, []);
+
 
   return (
     <div className="products-page">
@@ -96,9 +55,14 @@ const Products = () => {
       {/* Grid */}
       <section className="section">
         <div className="container">
-          <div className="product-grid">
-            {products.map((p) => (
-              <div key={p.id} className="glass-card" style={{ padding: '1.5rem', position: 'relative' }}>
+          {loading ? (
+            <div style={{ textAlign: 'center', padding: '50px', fontSize: '1.5rem', color: 'var(--primary)' }}>
+              Loading products...
+            </div>
+          ) : (
+            <div className="product-grid">
+              {products.map((p) => (
+                <div key={p.id} className="glass-card" style={{ padding: '1.5rem', position: 'relative' }}>
                 {p.badge && (
                   <div style={{ position: 'absolute', top: '15px', left: '15px', background: 'var(--secondary)', color: 'var(--primary)', padding: '5px 12px', borderRadius: '5px', fontSize: '0.65rem', fontWeight: '900', zIndex: 2 }}>{p.badge}</div>
                 )}
@@ -142,6 +106,7 @@ const Products = () => {
               </div>
             ))}
           </div>
+        )}
         </div>
       </section>
 
