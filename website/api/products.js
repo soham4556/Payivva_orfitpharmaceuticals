@@ -6,7 +6,7 @@ export default async function handler(req, res) {
     }
 
     const db = await mysql.createConnection({
-        host: process.env.DB_HOST || 'srv2203.hstgr.io',
+        host: process.env.DB_HOST || '82.25.121.184',
         user: process.env.DB_USER || 'u869403905_abc',
         password: process.env.DB_PASSWORD || 'Ganesh@703080',
         database: process.env.DB_NAME || 'u869403905_soham_project'
@@ -23,6 +23,7 @@ export default async function handler(req, res) {
 
         res.status(200).json(parsedResults);
     } catch (err) {
+        console.error('Database Error:', err);
         res.status(500).json({ error: err.message });
     } finally {
         await db.end();
