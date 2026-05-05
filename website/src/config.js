@@ -1,5 +1,5 @@
 const API_URL = window.location.hostname === 'localhost' 
     ? 'http://localhost:5000' 
-    : 'https://your-render-backend-url.onrender.com'; // एकदा Render वरून URL मिळाला की इथे तो टाका
+    : ''; // Empty string means use the same domain (Vercel)
 
 export default API_URL;
