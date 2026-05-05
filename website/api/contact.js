@@ -20,7 +20,13 @@ export default async function handler(req, res) {
 
     try {
         const query = 'INSERT INTO contacts (name, email, subject, message) VALUES (?, ?, ?, ?)';
-        await db.execute(query, [name, email, subject, message]);
+        // Ensure values are not undefined (convert to null if missing)
+        await db.execute(query, [
+            name || null, 
+            email || null, 
+            subject || 'General Inquiry', 
+            message || null
+        ]);
         res.status(200).json({ success: 'Message sent successfully! We will contact you soon.' });
     } catch (err) {
         console.error('Database Error:', err);
