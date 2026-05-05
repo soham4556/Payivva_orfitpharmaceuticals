@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: orfit-backend
+    env: node
+    rootDir: server
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: DB_HOST
+        value: srv2203.hstgr.io
+      - key: DB_USER
+        value: u869403905_abc
+      - key: DB_PASSWORD
+        value: Ganesh@703080
+      - key: DB_NAME
+        value: u869403905_soham_project
+      - key: PORT
+        value: 5000
